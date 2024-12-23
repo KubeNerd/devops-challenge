@@ -1,0 +1,50 @@
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - wordpress-network
+
+  app:
+    container_name: app
+    image: wordpress
+    restart: always
+    # ports:
+    #   - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    volumes:
+      - wordpress-data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - wordpress-network
+
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db-mysql-data:/var/lib/mysql
+    networks:
+      - wordpress-network
+
+volumes:
+  wordpress-data:
+  db-mysql-data:
+
+networks:
+  wordpress-network:
+    driver: bridge
