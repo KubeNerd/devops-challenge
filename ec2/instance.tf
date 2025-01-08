@@ -3,16 +3,23 @@
 
 data "aws_ami" "instance_ami" {
   # Find AMI: aws ec2 describe-images --owners amazon --region us-east-1
+
   most_recent = true
-  owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 
-}
 
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+
+}
 
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
