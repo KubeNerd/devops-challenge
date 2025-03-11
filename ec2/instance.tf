@@ -21,9 +21,15 @@ data "aws_ami" "instance_ami" {
 
 }
 
+
+/**
+    ssh-keygen -t rsa -b 4096 -f nova-chave.pem
+    chmod 400 nova-chave.pem
+
+**/
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
-  public_key = file("./devopschallange.pub")
+  public_key = file("./devops.pem.pub")
 }
 
 # https://aws.amazon.com/pt/ec2/instance-types/
